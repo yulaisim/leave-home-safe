@@ -1,64 +1,45 @@
 # 安心回家
 
-[![pipeline status](https://gitlab.com/codogo-b/back-home-safe/badges/master/pipeline.svg)](https://gitlab.com/codogo-b/back-home-safe/-/commits/master)
-
 一個以安心出行為例嘅 PWA
 
-## 有用連結
+## 聲明 [22-02-2021]
 
-[原 post](https://lihkg.com/thread/2409365/page/1)
+呢個係原本GitLab Project嘅fork，目前update咗Dockerfile俾大家可以更加方便咁deploy啦。
+功能上面都暫時無乜野要補充嘅，遲啲會盡量整個似安心出行嘅介面，加埋自願save紀錄嘅功能，方便大家應付老細或者政府囉。
 
-[Build Status](https://gitlab.com/codogo-b/back-home-safe/-/pipelines)
+## Local Host
 
-## 聲明 [20-02-2021]
+```javascript
+npm ci
+npm run start
+```
+然後可以用 https://localhost:3000 上啦。
 
-最近社會各界給予的壓力太大，決定離開這個項目，希望大家原諒
+## Remote Host
 
-此 Project 將不會再有任何更新，並將在不久將來完全移除
-
-## 聲明
-
-對於政府與社會各界將第一個 post 嘅標題以及文章重點放響 "安心出行" 以及 "翻版"
-本人深表遺憾
-
-我原本只係想將自己 IT 學習嘅知識分享，為咗一個噱頭用咗安心出行嚟呃上位
-
-上個 post 足以引證只有標題黨先可以響連登立足，本人亦十分無奈，只能繼續用呢個咁爆嘅標題搵食
-
-[【正視聽】是咁的，我整咗人生第一個 PWA (2)](https://lihkg.com/thread/2404315)
-
-我再重再再再申一次
-
-此帖只以安心出行為例討論 PWA 相關技術
-
-並非鼓勵任何人以此成品作任何堂食用途
-
-引用[政府新聞處公告](https://www.info.gov.hk/gia/general/202102/16/P2021021600529.htm)
-
-不知名的網站或流動應用程式可能帶有電腦病毒或為木馬軟件，千祈唔好拎嚟認真用
-
-請大家遵從[大律師意見](http://cablenews.i-cable.com/ci/news/article/37/722934)
-
-唔好被誤導，用了翻版「安心出行」，有法律風險，包括不誠實使用電腦或其他詐騙、行騙的罪行。
-
-任何人利用此作任何犯法行為，本人並不負責
-
-若果作品有觸犯任何法例，歡迎局方透過 GitLab/email 同我聯絡，我會將作品下架
-
-## Local test
-
-```bash
-npm install
-npm start
+首先用Docker build & host container：
+```
+docker build --tag leave-home-safe .
+docker run -p 80:80 leave-home-safe
 ```
 
-## 自己 Host
+由於self-signed certificate對remote host無乜用（Browser唔會認嘅），所以而家嘅dockerfile無咗openssl啦。如果要用https嘅話，最簡單嘅方法係喺host nginx再開個configuration file指去你嘅domain，加呢個location block：
 
-```bash
-npm install
-npm run build
 ```
+location / {
+    proxy_pass http://localhost/
+}
+```
+然後裝certbot，等certbot自己搞ssl & certificates。
 
-將/build 放入自己 web server 就 okay
+直接用Cloudflare flexible ssl都可以嘅，只要你唔介意cloudflare到server呢段無https咪得囉。
 
-\*\*註：一定要用 https serve
+## Contribution
+
+由於呢個project已經俾香港政府「定性」咗做違法，所有想contribute嘅手足們就要留心資訊安全啦，唔建議你地用有自己資料同projects嘅account submit pull request。
+
+## Copyright
+
+GPL version 3 licensed
+Maintained by Ms. Yu Lai Sim from Good Hope School
+Respect to codogob and all original contributors

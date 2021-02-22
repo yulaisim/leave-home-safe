@@ -1,4 +1,4 @@
-import { any } from "ramda";
+import { any, hasIn } from "ramda";
 import { useLocalStorage } from "react-use";
 import constate from "constate";
 import { useCallback, useEffect, useState } from "react";
@@ -13,6 +13,14 @@ export const [UseCameraProvider, useCamera] = constate(() => {
 
   const initCameraList = useCallback(async () => {
     try {
+      if (
+        !hasCameraSupport ||
+        !hasIn("enumerateDevices", navigator.mediaDevices)
+      ) {
+        setCameraList([]);
+        return;
+      }
+
       const deviceList = await navigator.mediaDevices.enumerateDevices();
 
       const cameraList = deviceList.filter<InputDeviceInfo>(
@@ -23,11 +31,11 @@ export const [UseCameraProvider, useCamera] = constate(() => {
     } catch (e) {
       alert("Unable to list device.\n\n" + e);
     }
-  }, []);
+  }, [hasCameraSupport]);
 
   useEffect(() => {
     initCameraList();
-  }, [initCameraList]);
+  }, [hasCameraSupport, initCameraList]);
 
   useEffect(() => {
     if (
